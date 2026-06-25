@@ -12,6 +12,7 @@
     --night:#1B2A45; --night-2:#0F1B30; --night-3:#28466A;
     --teal:#2F6F73; --teal-deep:#1F4D50; --teal-tint:#E2EDEB;
     --gold:#BD8536; --gold-deep:#8E631F; --gold-tint:#F6ECD8;
+    --green:#4C8C5B; --green-deep:#2E5C3A; --green-tint:#E7F2E9;
     --paper:#F0F1EA; --card:#FFFFFF; --ink:#23262B; --ink-soft:#5B6168;
     --line:#DCDFD4; --caution:#9C4630; --caution-tint:#F3E3DB;
     --sidebar-w:248px;
@@ -173,10 +174,17 @@
   .item-row.star .item-time{ color:var(--gold-deep); }
   .item-text{ flex:1; font-size:13.5px; line-height:1.65; padding-top:4px; }
 
-  .note-row{ display:flex; gap:11px; align-items:flex-start; border:1.5px dashed var(--gold); background:var(--gold-tint); border-radius:11px; padding:12px 15px; margin-bottom:10px; font-size:12.6px; line-height:1.7; color:#5C4A26; }
-  .note-row .chip{ flex:none; font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:10.5px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:20px; height:fit-content; white-space:nowrap; }
+  .note-row{ display:flex; gap:11px; align-items:flex-start; border:1.5px dashed var(--green); background:var(--green-tint); border-radius:11px; padding:12px 15px; margin-bottom:10px; font-size:12.6px; line-height:1.7; color:#234430; }
+  .note-row .chip{ flex:none; font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:10.5px; background:var(--green-deep); color:#fff; padding:3px 10px; border-radius:20px; height:fit-content; white-space:nowrap; }
+  .note-row.tip{ border-color:var(--gold); background:var(--gold-tint); color:#5C4A26; }
+  .note-row.tip .chip{ background:var(--gold-deep); }
+  .note-row.caution{ border-color:var(--caution); background:var(--caution-tint); color:#5C2A18; }
+  .note-row.caution .chip{ background:var(--caution); }
 
   .day-stay{ margin-top:14px; display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--teal-deep); background:var(--teal-tint); padding:7px 14px; border-radius:20px; }
+  .item-row.stay{ background:var(--teal-tint); border-color:#BFD8D3; }
+  .item-row.stay .item-icon{ background:#fff; color:var(--teal-deep); }
+  .item-row.stay .item-time{ color:var(--teal-deep); }
 
   /* ============ PACKING ============ */
   .pack-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -381,7 +389,7 @@
           </div>
           <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">16:00</div><div class="item-text">桃園機場集合，辦理出境與行李托運</div></div>
           <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">18:45</div><div class="item-text">飛往奧克蘭，夜宿機上</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>再次檢查行李，嚴禁隨身或託運肉類、新鮮水果、植物種子。</div></div>
+          <div class="note-row caution"><span class="chip">注意</span><div>再次檢查行李，嚴禁隨身或託運肉類、新鮮水果、植物種子。</div></div>
         </div>
       </section>
 
@@ -396,7 +404,7 @@
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">15:45–16:30</div><div class="item-text">機場取車，務必錄影檢查外觀與輪胎</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">17:30–19:30</div><div class="item-text">Riverside Market 逛街，享用多國美食晚餐 🍴</div></div>
           <div class="note-row"><span class="chip">備案</span><div>若還有體力，可導航至 Pak'nSave Riccarton 大採買：紐西蘭肋眼牛排、羊小排、Lewis Road Creamery 鮮奶，以及米佛峽灣（Day 6）必備的當地強力防蚊液（台灣防蚊液對沙蠅無效）。</div></div>
-          <div class="day-stay">🏨 住宿：Fable Christchurch</div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Fable Christchurch</div></div>
         </div>
       </section>
 
@@ -413,7 +421,7 @@
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">13:30–15:00</div><div class="item-text">好牧羊人教堂，牛奶藍湖畔漫步拍照</div></div>
           <div class="item-row"><div class="item-icon">🛒</div><div class="item-time">16:30</div><div class="item-text">Four Square Tekapo 超市補貨</div></div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">18:00–20:00</div><div class="item-text">晚餐：公寓自煮牛排，或 Kohan Restaurant 鮭魚丼飯</div></div>
-          <div class="day-stay">🏨 住宿：Peppers Bluewater Resort</div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Peppers Bluewater Resort</div></div>
         </div>
       </section>
 
@@ -422,7 +430,6 @@
           <div class="day-banner">
             <div class="day-num serif"><span class="lbl">DAY</span>3</div>
             <div><div class="day-route">Tekapo <span class="arrow">⇄</span> 庫克山</div><div class="day-date">11/8（日）</div></div>
-            <div class="badge">★ 重頭戲日</div>
           </div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30–09:50</div><div class="item-text">開往庫克山（約105km，1小時20分。出發前油箱過半）</div></div>
           <div class="item-row"><div class="item-icon">📷</div><div class="item-time">10:00–10:45</div><div class="item-text">Aoraki/Mt Cook 遊客中心</div></div>
@@ -433,8 +440,8 @@
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">18:30–19:50</div><div class="item-text">返回特卡波，簡單晚餐、抓緊時間休息</div></div>
           <div class="item-row"><div class="item-icon">📍</div><div class="item-time">21:15</div><div class="item-text">抵達 Dark Sky Project Base 報到（1 Motuariki Lane）</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">21:30–23:30</div><div class="item-text">Summit Experience 山頂觀星</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>約翰山頂深夜接近零度，全員務必穿薄羽絨＋防風外套，戴毛帽手套。</div></div>
-          <div class="day-stay">🏨 住宿：Peppers Bluewater Resort</div>
+          <div class="note-row caution"><span class="chip">注意</span><div>約翰山頂深夜接近零度，全員務必穿薄羽絨＋防風外套，戴毛帽手套。</div></div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Peppers Bluewater Resort</div></div>
         </div>
       </section>
 
@@ -451,7 +458,7 @@
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">16:00–17:30</div><div class="item-text">朝聖 That Wanaka Tree 孤獨樹，湖畔散步</div></div>
           <div class="item-row"><div class="item-icon">🛒</div><div class="item-time">18:00</div><div class="item-text">New World 超市補貨；公寓自煮羊小排，或 Big Fig／Kika 用餐</div></div>
           <div class="note-row"><span class="chip">備案</span><div>若 Day 3 觀星不太累、今早天氣好，可把「開車上 Mt. John 頂端 Astro Cafe 喝咖啡俯瞰蒂卡波湖」排進退房後出發前，完全順路（上山需付小額過路費）。</div></div>
-          <div class="day-stay">🏨 住宿：Edgewater Hotel</div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Edgewater Hotel</div></div>
         </div>
       </section>
 
@@ -466,9 +473,9 @@
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">11:30–13:30</div><div class="item-text">Arrowtown 箭鎮老街漫步，The Fork and Tap 午餐 🍴</div></div>
           <div class="item-row"><div class="item-icon">🏨</div><div class="item-time">15:00</div><div class="item-text">入住 Oaks Queenstown Shores Resort</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">16:00–18:00</div><div class="item-text">皇后鎮市區與湖畔散步，Fergburger／Patagonia 冰淇淋 🍴</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>Crown Range Road 陡且髮夾彎多，請穩健慢行；後方跟車超過5輛時記得靠 Slow Vehicle Bay 讓道。</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>此時段保留彈性，可評估現場加購 17:00 的 TSS Earnslaw 古董蒸汽船＋Walter Peak 牧場 BBQ 晚餐。</div></div>
-          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第1晚／共3晚）</div>
+          <div class="note-row caution"><span class="chip">注意</span><div>Crown Range Road 陡且髮夾彎多，請穩健慢行；後方跟車超過5輛時記得靠 Slow Vehicle Bay 讓道。</div></div>
+          <div class="note-row tip"><span class="chip">提醒</span><div>此時段保留彈性，可評估現場加購 17:00 的 TSS Earnslaw 古董蒸汽船＋Walter Peak 牧場 BBQ 晚餐。</div></div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Oaks Queenstown Shores Resort（第1晚／共3晚）</div></div>
         </div>
       </section>
 
@@ -482,10 +489,10 @@
           <div class="item-row"><div class="item-icon">📍</div><div class="item-time">06:15</div><div class="item-text">RealNZ 皇后鎮旅客中心報到（88 Beach Street）</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">06:45</div><div class="item-text">Coach + Cruise 大巴接駁＋峽灣遊船：中午登船 Signature Cruise，瀑布、野生海豹</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">19:30</div><div class="item-text">大巴送返皇后鎮市區</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>峽灣單程4–5小時，搭大巴可在車上放鬆補眠，沿途停靠 94 號公路精華點如 Mirror Lakes 拍照。</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>早出晚歸消耗大，回飯店不建議再自煮，建議直接到市區 Flame Bar & Grill 吃戰斧牛排或肋排犒賞一天 🍴。</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>米佛峽灣沙蠅兇猛，下車前全員噴好 Day 1 買的強力防蚊液。</div></div>
-          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第2晚）</div>
+          <div class="note-row tip"><span class="chip">提醒</span><div>峽灣單程4–5小時，搭大巴可在車上放鬆補眠，沿途停靠 94 號公路精華點如 Mirror Lakes 拍照。</div></div>
+          <div class="note-row tip"><span class="chip">提醒</span><div>早出晚歸消耗大，回飯店不建議再自煮，建議直接到市區 Flame Bar & Grill 吃戰斧牛排或肋排犒賞一天 🍴。</div></div>
+          <div class="note-row caution"><span class="chip">注意</span><div>米佛峽灣沙蠅兇猛，下車前全員噴好 Day 1 買的強力防蚊液。</div></div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Oaks Queenstown Shores Resort（第2晚）</div></div>
         </div>
       </section>
 
@@ -498,8 +505,8 @@
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">09:00–12:00</div><div class="item-text">睡到自然醒，皇后鎮花園漫步，Bespoke Kitchen 早午餐，順道採買伴手禮</div></div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">12:00–13:30</div><div class="item-text">午餐：Botswana Butchery 湖景餐廳</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">14:00</div><div class="item-text">Skyline Gondola ＋ 3–5趟 Luge 滑車，俯瞰皇后鎮與魔戒雪山</div></div>
-          <div class="note-row"><span class="chip">備案</span><div>傍晚18:00 強烈建議排入 Onsen Hot Pools 昂森溫泉——非常熱門，現場幾乎沒有位置，務必在出發前於官網先訂好（選 Original Onsen Soak）。</div></div>
-          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第3晚）</div>
+          <div class="note-row caution"><span class="chip">注意</span><div>傍晚18:00 強烈建議排入 Onsen Hot Pools 昂森溫泉——非常熱門，現場幾乎沒有位置，務必在出發前於官網先訂好（選 Original Onsen Soak）。</div></div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">Oaks Queenstown Shores Resort（第3晚）</div></div>
         </div>
       </section>
 
@@ -515,7 +522,7 @@
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">15:30–16:15</div><div class="item-text">叫車直奔市中心 M Social Auckland</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">17:00–19:00</div><div class="item-text">Viaduct Harbour 港邊漫步或 Commercial Bay 逛街</div></div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">19:00</div><div class="item-text">晚餐：Soul Bar & Bistro 或 Harbourside，生蠔海鮮慶祝自駕圓滿</div></div>
-          <div class="day-stay">🏨 住宿：M Social Auckland</div>
+          <div class="item-row stay"><div class="item-icon">🏨</div><div class="item-time">住宿</div><div class="item-text">M Social Auckland</div></div>
         </div>
       </section>
 
@@ -645,10 +652,10 @@ const PAGES = [
   {id:'day0', label:'Day 0　出發', group:'每日行程'},
   {id:'day1', label:'Day 1　基督城', group:'每日行程'},
   {id:'day2', label:'Day 2　特卡波湖', group:'每日行程'},
-  {id:'day3', label:'Day 3　庫克山', group:'每日行程', star:true},
+  {id:'day3', label:'Day 3　庫克山', group:'每日行程'},
   {id:'day4', label:'Day 4　瓦納卡', group:'每日行程'},
   {id:'day5', label:'Day 5　皇后鎮', group:'每日行程'},
-  {id:'day6', label:'Day 6　米佛峽灣', group:'每日行程', star:true},
+  {id:'day6', label:'Day 6　米佛峽灣', group:'每日行程'},
   {id:'day7', label:'Day 7　皇后鎮假日', group:'每日行程'},
   {id:'day8', label:'Day 8　飛奧克蘭', group:'每日行程'},
   {id:'day9', label:'Day 9　回台北', group:'每日行程'},
