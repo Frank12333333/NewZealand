@@ -58,15 +58,10 @@
 
   /* ---- Stage / Pages ---- */
   #stage{ flex:1; position:relative; overflow:hidden; background:var(--paper); }
-  #hamburger{
-    display:none; position:fixed; top:16px; left:16px; z-index:60; width:40px; height:40px;
-    border-radius:50%; border:none; background:var(--night); color:#fff; font-size:17px; cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,.25);
-  }
   #pages{ position:relative; height:100%; }
   .page{
-    position:absolute; inset:0; overflow-y:auto; opacity:0; visibility:hidden;
-    transition:opacity .3s ease; padding:56px 64px 110px 64px;
+    position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch; opacity:0; visibility:hidden;
+    transition:opacity .3s ease; padding:56px 64px 100px 64px;
   }
   .page.active{ opacity:1; visibility:visible; z-index:2; }
   .page-inner{ max-width:880px; margin:0 auto; }
@@ -76,18 +71,25 @@
   .pg-rule{ height:3px; width:48px; background:var(--gold); margin:10px 0 22px 0; }
   .pg-intro{ color:var(--ink-soft); font-size:13.5px; max-width:560px; margin-bottom:18px; line-height:1.8; }
 
-  /* ---- Pager controls ---- */
-  #pager{
-    position:absolute; left:50%; bottom:22px; transform:translateX(-50%); z-index:40;
-    display:flex; align-items:center; gap:14px; background:rgba(255,255,255,.92); backdrop-filter:blur(6px);
-    border:1px solid var(--line); border-radius:30px; padding:7px 8px; box-shadow:0 6px 22px rgba(20,30,40,.12);
+  /* ---- Bottom bar (mobile-friendly nav) ---- */
+  #bottombar{
+    position:absolute; left:0; right:0; bottom:0; z-index:40; height:62px;
+    background:linear-gradient(180deg,var(--night-3),var(--night)); display:flex; align-items:center; gap:10px;
+    padding:0 14px; box-shadow:0 -6px 20px rgba(15,20,30,.18);
   }
-  .pager-btn{
-    width:32px; height:32px; border-radius:50%; border:none; background:var(--night); color:#fff;
-    font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  .bb-icon{
+    flex:none; width:38px; height:38px; border-radius:50%; border:none; background:rgba(255,255,255,.12);
+    color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
   }
-  .pager-btn:disabled{ opacity:.3; cursor:default; }
-  #pageIndicator{ font-size:11.5px; color:var(--ink-soft); min-width:54px; text-align:center; font-family:"Noto Sans TC Medium"; }
+  .bb-icon:hover{ background:rgba(255,255,255,.22); }
+  .bb-icon:disabled{ opacity:.3; cursor:default; }
+  #homeBtn{ font-size:20px; }
+  #pageSelect{
+    flex:1; min-width:0; height:40px; border-radius:20px; border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.08); color:#fff; font-family:"Noto Sans TC Medium","Noto Sans TC";
+    font-size:13.5px; padding:0 14px; -webkit-appearance:none; appearance:none; text-align:center;
+  }
+  #pageSelect option{ color:#23262B; }
 
   /* ============ COVER PAGE ============ */
   #page-cover{ padding:0; }
@@ -154,6 +156,12 @@
   .pill-optional{ border:1px solid var(--gold); color:var(--gold); font-size:10px; padding:2px 8px; border-radius:20px; margin-right:6px; }
 
   /* ============ DAY PAGES ============ */
+  .day-scene{ width:100%; height:170px; border-radius:14px; overflow:hidden; margin-bottom:18px; position:relative; background:var(--paper); }
+  .day-scene svg{ width:100%; height:100%; display:block; }
+  .day-scene .cap{
+    position:absolute; left:14px; bottom:12px; color:#fff; font-size:12px; font-family:"Noto Sans TC Medium","Noto Sans TC";
+    background:rgba(10,15,25,.38); padding:5px 12px; border-radius:20px; backdrop-filter:blur(2px);
+  }
   .day-banner{
     background:linear-gradient(120deg,var(--night) 0%, var(--teal-deep) 100%); color:#fff; border-radius:16px;
     padding:24px 28px; margin-bottom:24px; display:flex; align-items:center; gap:22px; flex-wrap:wrap;
@@ -205,16 +213,13 @@
 
   /* ============ Mobile ============ */
   @media (max-width:880px){
-    #sidebar{ position:fixed; top:0; left:0; height:100%; transform:translateX(-100%); transition:transform .25s ease; box-shadow:8px 0 30px rgba(0,0,0,.3); }
-    #sidebar.open{ transform:translateX(0); }
-    #hamburger{ display:flex; align-items:center; justify-content:center; }
-    #hamburger.hide{ display:none; }
-    .page{ padding:78px 22px 110px 22px; }
+    #sidebar{ display:none; }
+    .page{ padding:34px 20px 92px 20px; }
     .prep-grid, .pack-grid, .budget-cols{ grid-template-columns:1fr; }
     .day-banner{ padding:20px; }
     .day-banner .badge{ margin-left:0; }
-    #overlay{ display:none; position:fixed; inset:0; background:rgba(10,15,25,.45); z-index:45; }
-    #overlay.show{ display:block; }
+    #bottombar{ padding:0 10px; gap:8px; }
+    #pageSelect{ font-size:12.5px; padding:0 8px; }
   }
 </style>
 </head>
@@ -223,17 +228,14 @@
 <div id="app">
 
   <aside id="sidebar">
-    <div class="brand">
+    <div class="brand" onclick="goTo('cover')" style="cursor:pointer;">
       <div class="eyebrow">FAMILY ROAD TRIP</div>
       <h1 class="serif">紐西蘭南島<span class="accent">＋</span>奧克蘭</h1>
     </div>
     <nav id="navlist"><!-- generated by JS --></nav>
   </aside>
 
-  <div id="overlay" onclick="closeSidebar()"></div>
-
   <main id="stage">
-    <button id="hamburger" onclick="toggleSidebar()">☰</button>
 
     <div id="pages">
 
@@ -253,33 +255,10 @@
               <div class="hero-div"></div>
               <div class="hero-stat"><div class="n serif">11/5—11/14</div><div class="l">2026・出發日期</div></div>
             </div>
-            <button class="cover-cta" onclick="goTo('overview')">開始瀏覽　↓</button>
+            <button class="cover-cta" onclick="goTo('prep')">開始瀏覽　↓</button>
           </div>
         </div>
       </section>
-
-      <!-- ============ OVERVIEW ============ -->
-      <section class="page" id="page-overview">
-        <div class="page-inner">
-          <div class="kicker">Trip at a glance</div>
-          <h2 class="pg-title serif">全程一覽</h2>
-          <div class="pg-rule"></div>
-          <div class="stat-strip">
-            <div class="stat-box"><div class="n serif">5</div><div class="l">處住宿地點</div></div>
-            <div class="stat-box"><div class="n serif">3</div><div class="l">處有完整廚房</div></div>
-            <div class="stat-box"><div class="n serif">3</div><div class="l">大型體驗已確認</div></div>
-            <div class="stat-box"><div class="n serif">2</div><div class="l">趟國內線轉機</div></div>
-            <div class="stat-box"><div class="n serif">1</div><div class="l">趟米佛峽灣免自駕日</div></div>
-          </div>
-          <div class="route-card">
-            <div class="ico">🗺️</div>
-            <div class="txt"><b>路線：</b>基督城 → 特卡波湖 → 庫克山（來回） → 瓦納卡 → 皇后鎮（含米佛峽灣一日）→ 飛奧克蘭</div>
-          </div>
-          <div class="route-card">
-            <div class="ico">⭐</div>
-            <div class="txt"><b>圖例：</b>行程卡上的星號代表大型體驗或重點行程；金色虛線框代表備案，平時不用看，需要時再切換。</div>
-          </div>
-        </div>
       </section>
 
       <!-- ============ PREP ============ -->
@@ -399,6 +378,31 @@
             <div class="day-num serif"><span class="lbl">DAY</span>1</div>
             <div><div class="day-route">奧克蘭 <span class="arrow">→</span> 基督城</div><div class="day-date">11/6（五）</div></div>
           </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F6ECD8"/><stop offset="45%" stop-color="#D9A45A"/><stop offset="100%" stop-color="#28466A"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky1)"/>
+              <rect y="190" width="800" height="70" fill="#1B2A45" opacity=".55"/>
+              <rect x="40" y="120" width="80" height="100" fill="#16233B"/>
+              <rect x="140" y="100" width="60" height="120" fill="#1B2A45"/>
+              <rect x="220" y="130" width="100" height="90" fill="#16233B"/>
+              <rect x="340" y="110" width="70" height="110" fill="#1B2A45"/>
+              <rect x="430" y="135" width="90" height="85" fill="#16233B"/>
+              <rect x="540" y="105" width="65" height="115" fill="#1B2A45"/>
+              <rect x="625" y="128" width="100" height="92" fill="#16233B"/>
+              <polygon points="40,120 80,95 120,120" fill="#28466A"/>
+              <polygon points="220,130 270,100 320,130" fill="#28466A"/>
+              <polygon points="430,135 475,108 520,135" fill="#28466A"/>
+              <polygon points="625,128 675,100 725,128" fill="#28466A"/>
+              <circle cx="80" cy="108" r="3" fill="#F6ECD8"/><circle cx="270" cy="114" r="3" fill="#F6ECD8"/>
+              <circle cx="475" cy="120" r="3" fill="#F6ECD8"/><circle cx="675" cy="113" r="3" fill="#F6ECD8"/>
+              <circle cx="160" cy="170" r="2.4" fill="#F6ECD8" opacity=".8"/><circle cx="380" cy="175" r="2.4" fill="#F6ECD8" opacity=".8"/>
+              <circle cx="580" cy="172" r="2.4" fill="#F6ECD8" opacity=".8"/>
+            </svg>
+            <div class="cap">📍 Riverside Market・基督城</div>
+          </div>
           <div class="item-row"><div class="item-icon">🛃</div><div class="item-time">10:25</div><div class="item-text">抵達奧克蘭機場，全團過海關（誠實申報食物與裝備）</div></div>
           <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">14:00–15:25</div><div class="item-text">轉搭國內線飛抵基督城</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">15:45–16:30</div><div class="item-text">機場取車，務必錄影檢查外觀與輪胎</div></div>
@@ -413,6 +417,23 @@
           <div class="day-banner">
             <div class="day-num serif"><span class="lbl">DAY</span>2</div>
             <div><div class="day-route">基督城 <span class="arrow">→</span> Fairlie <span class="arrow">→</span> 特卡波湖</div><div class="day-date">11/7（六）</div></div>
+          </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#CFE6E3"/><stop offset="100%" stop-color="#EFF3EC"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky2)"/>
+              <polygon points="0,170 130,90 260,160 400,70 540,150 680,95 800,165 800,260 0,260" fill="#9FBFC7" opacity=".55"/>
+              <polygon points="0,200 800,200 800,260 0,260" fill="#3F8E91"/>
+              <rect x="0" y="200" width="800" height="3" fill="#fff" opacity=".4"/>
+              <polygon points="330,210 330,140 360,108 390,140 390,210" fill="#16233B"/>
+              <rect x="352" y="160" width="16" height="32" fill="#3F8E91"/>
+              <rect x="356" y="118" width="8" height="14" fill="#16233B"/>
+              <line x1="360" y1="100" x2="360" y2="88" stroke="#16233B" stroke-width="3"/>
+              <line x1="354" y1="92" x2="366" y2="92" stroke="#16233B" stroke-width="3"/>
+            </svg>
+            <div class="cap">📍 好牧羊人教堂・Lake Tekapo</div>
           </div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30</div><div class="item-text">退房，出發前加滿油</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30–11:30</div><div class="item-text">開往 Fairlie 小鎮（約185km，2.5–3小時）</div></div>
@@ -430,6 +451,26 @@
           <div class="day-banner">
             <div class="day-num serif"><span class="lbl">DAY</span>3</div>
             <div><div class="day-route">Tekapo <span class="arrow">⇄</span> 庫克山</div><div class="day-date">11/8（日）</div></div>
+          </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#B9D4DC"/><stop offset="100%" stop-color="#EAF2F1"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky3)"/>
+              <circle cx="650" cy="55" r="16" fill="#F6ECD8" opacity=".8"/>
+              <polygon points="300,210 380,55 410,90 460,40 540,210" fill="#1B2A45"/>
+              <polygon points="380,55 410,90 395,100 370,75" fill="#EAF2F1"/>
+              <polygon points="460,40 500,85 480,98 450,68" fill="#EAF2F1"/>
+              <polygon points="120,210 220,120 320,210" fill="#28466A" opacity=".85"/>
+              <polygon points="540,210 620,130 720,210" fill="#28466A" opacity=".85"/>
+              <rect y="200" width="800" height="60" fill="#7FB3B8"/>
+              <polygon points="250,215 280,200 305,213 285,222" fill="#fff" opacity=".9"/>
+              <polygon points="470,222 495,210 515,221 498,230" fill="#fff" opacity=".9"/>
+              <polygon points="600,212 622,202 640,213 624,221" fill="#fff" opacity=".9"/>
+              <path d="M340,235 q20,-8 40,0" stroke="#16233B" stroke-width="3" fill="none" opacity=".7"/>
+            </svg>
+            <div class="cap">📍 Aoraki/Mt Cook・塔斯曼冰河</div>
           </div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30–09:50</div><div class="item-text">開往庫克山（約105km，1小時20分。出發前油箱過半）</div></div>
           <div class="item-row"><div class="item-icon">📷</div><div class="item-time">10:00–10:45</div><div class="item-text">Aoraki/Mt Cook 遊客中心</div></div>
@@ -451,6 +492,36 @@
             <div class="day-num serif"><span class="lbl">DAY</span>4</div>
             <div><div class="day-route">Tekapo <span class="arrow">→</span> Lindis Pass <span class="arrow">→</span> 瓦納卡</div><div class="day-date">11/9（一）</div></div>
           </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F6ECD8"/><stop offset="60%" stop-color="#E3CFB0"/><stop offset="100%" stop-color="#9FC2C2"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky4)"/>
+              <polygon points="0,150 150,95 320,140 480,80 650,135 800,100 800,190 0,190" fill="#7FA0AE" opacity=".5"/>
+              <rect y="188" width="800" height="72" fill="#5FA0A0"/>
+              <rect x="0" y="188" width="800" height="3" fill="#fff" opacity=".35"/>
+              <g stroke="#16233B" stroke-width="3.4" stroke-linecap="round" fill="none">
+                <line x1="400" y1="188" x2="400" y2="148"/>
+                <line x1="400" y1="160" x2="378" y2="138"/>
+                <line x1="400" y1="155" x2="421" y2="132"/>
+                <line x1="400" y1="148" x2="392" y2="120"/>
+                <line x1="400" y1="148" x2="411" y2="118"/>
+                <line x1="378" y1="138" x2="368" y2="122"/>
+                <line x1="421" y1="132" x2="432" y2="115"/>
+              </g>
+              <g stroke="#16233B" stroke-width="3.4" stroke-linecap="round" fill="none" opacity=".22" transform="translate(0,376) scale(1,-1)">
+                <line x1="400" y1="188" x2="400" y2="148"/>
+                <line x1="400" y1="160" x2="378" y2="138"/>
+                <line x1="400" y1="155" x2="421" y2="132"/>
+                <line x1="400" y1="148" x2="392" y2="120"/>
+                <line x1="400" y1="148" x2="411" y2="118"/>
+                <line x1="378" y1="138" x2="368" y2="122"/>
+                <line x1="421" y1="132" x2="432" y2="115"/>
+              </g>
+            </svg>
+            <div class="cap">📍 That Wanaka Tree</div>
+          </div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">08:30–09:30</div><div class="item-text">悠閒早餐、收行李、退房</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">09:30</div><div class="item-text">出發往瓦納卡，可在 Twizel／Omarama 補油休息</div></div>
           <div class="item-row"><div class="item-icon">📷</div><div class="item-time">沿途</div><div class="item-text">橫跨 Lindis Pass 觀景台，魔戒級荒涼高原美景</div></div>
@@ -467,6 +538,26 @@
           <div class="day-banner">
             <div class="day-num serif"><span class="lbl">DAY</span>5</div>
             <div><div class="day-route">Wanaka <span class="arrow">→</span> 箭鎮 <span class="arrow">→</span> 皇后鎮</div><div class="day-date">11/10（二）</div></div>
+          </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F6ECD8"/><stop offset="100%" stop-color="#E3B274"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky5)"/>
+              <polygon points="0,160 200,100 400,150 600,90 800,140 800,210 0,210" fill="#8FA0AE" opacity=".45"/>
+              <rect y="208" width="800" height="52" fill="#C9B98A"/>
+              <circle cx="120" cy="170" r="26" fill="#BD8536"/><rect x="116" y="175" width="8" height="35" fill="#5C4A26"/>
+              <circle cx="690" cy="165" r="28" fill="#8E631F"/><rect x="685" y="172" width="9" height="38" fill="#5C4A26"/>
+              <g>
+                <rect x="220" y="155" width="70" height="55" fill="#16233B"/><polygon points="220,155 255,128 290,155" fill="#1B2A45"/>
+                <rect x="300" y="165" width="60" height="45" fill="#1B2A45"/><polygon points="300,165 330,142 360,165" fill="#16233B"/>
+                <rect x="370" y="150" width="75" height="60" fill="#16233B"/><polygon points="370,150 407,122 445,150" fill="#1B2A45"/>
+                <rect x="455" y="168" width="55" height="42" fill="#1B2A45"/><polygon points="455,168 482,146 510,168" fill="#16233B"/>
+                <rect x="520" y="158" width="65" height="52" fill="#16233B"/><polygon points="520,158 552,132 585,158" fill="#1B2A45"/>
+              </g>
+            </svg>
+            <div class="cap">📍 Arrowtown 箭鎮老街</div>
           </div>
           <div class="item-row"><div class="item-icon">🧭</div><div class="item-time">08:30–09:30</div><div class="item-text">退房出發</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">09:30–11:30</div><div class="item-text">開越紐西蘭最高公路 Crown Range Road</div></div>
@@ -486,6 +577,24 @@
             <div><div class="day-route">米佛峽灣一日遊</div><div class="day-date">11/11（三）</div></div>
             <div class="badge">不自駕</div>
           </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky6" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C7D6D6"/><stop offset="100%" stop-color="#92ACAE"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky6)"/>
+              <polygon points="280,225 360,60 420,100 460,55 560,225" fill="#16233B"/>
+              <line x1="500" y1="95" x2="495" y2="200" stroke="#EAF2F1" stroke-width="6" opacity=".85"/>
+              <ellipse cx="380" cy="100" rx="120" ry="22" fill="#fff" opacity=".25"/>
+              <ellipse cx="470" cy="140" rx="100" ry="18" fill="#fff" opacity=".2"/>
+              <polygon points="120,225 220,140 300,225" fill="#28466A" opacity=".8"/>
+              <polygon points="560,225 650,150 740,225" fill="#28466A" opacity=".8"/>
+              <rect y="222" width="800" height="38" fill="#5A7E82"/>
+              <polygon points="430,235 460,232 458,242 432,244" fill="#16233B"/>
+              <rect x="438" y="228" width="5" height="8" fill="#16233B"/>
+            </svg>
+            <div class="cap">📍 Milford Sound・Mitre Peak</div>
+          </div>
           <div class="item-row"><div class="item-icon">📍</div><div class="item-time">06:15</div><div class="item-text">RealNZ 皇后鎮旅客中心報到（88 Beach Street）</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">06:45</div><div class="item-text">Coach + Cruise 大巴接駁＋峽灣遊船：中午登船 Signature Cruise，瀑布、野生海豹</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">19:30</div><div class="item-text">大巴送返皇后鎮市區</div></div>
@@ -502,6 +611,25 @@
             <div class="day-num serif"><span class="lbl">DAY</span>7</div>
             <div><div class="day-route">皇后鎮度假放鬆日</div><div class="day-date">11/12（四）</div></div>
           </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky7" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F6ECD8"/><stop offset="100%" stop-color="#A9CACA"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky7)"/>
+              <polygon points="80,230 360,60 640,230" fill="#28466A"/>
+              <polygon points="360,60 420,80 340,110" fill="#3A5C82"/>
+              <line x1="170" y1="195" x2="430" y2="85" stroke="#5C4A26" stroke-width="3"/>
+              <rect x="225" y="158" width="22" height="16" rx="3" fill="#BD8536" transform="rotate(-25 236 166)"/>
+              <rect x="305" y="125" width="22" height="16" rx="3" fill="#BD8536" transform="rotate(-25 316 133)"/>
+              <rect y="225" width="800" height="35" fill="#5FA0A0"/>
+              <rect x="500" y="208" width="40" height="20" fill="#16233B"/>
+              <rect x="548" y="200" width="34" height="28" fill="#1B2A45"/>
+              <rect x="590" y="212" width="46" height="16" fill="#16233B"/>
+              <rect x="645" y="204" width="30" height="24" fill="#1B2A45"/>
+            </svg>
+            <div class="cap">📍 Skyline Queenstown Gondola</div>
+          </div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">09:00–12:00</div><div class="item-text">睡到自然醒，皇后鎮花園漫步，Bespoke Kitchen 早午餐，順道採買伴手禮</div></div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">12:00–13:30</div><div class="item-text">午餐：Botswana Butchery 湖景餐廳</div></div>
           <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">14:00</div><div class="item-text">Skyline Gondola ＋ 3–5趟 Luge 滑車，俯瞰皇后鎮與魔戒雪山</div></div>
@@ -515,6 +643,28 @@
           <div class="day-banner">
             <div class="day-num serif"><span class="lbl">DAY</span>8</div>
             <div><div class="day-route">皇后鎮 <span class="arrow">→</span> 飛奧克蘭</div><div class="day-date">11/13（五）</div></div>
+          </div>
+          <div class="day-scene">
+            <svg viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="sky8" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E3D2A0"/><stop offset="55%" stop-color="#A98FA0"/><stop offset="100%" stop-color="#28466A"/>
+              </linearGradient></defs>
+              <rect width="800" height="260" fill="url(#sky8)"/>
+              <rect x="120" y="120" width="26" height="100" fill="#16233B"/>
+              <rect x="160" y="95" width="20" height="125" fill="#1B2A45"/>
+              <rect x="195" y="130" width="30" height="90" fill="#16233B"/>
+              <rect x="430" y="60" width="16" height="160" fill="#1B2A45"/>
+              <circle cx="438" cy="50" r="10" fill="#1B2A45"/>
+              <rect x="470" y="110" width="24" height="110" fill="#16233B"/>
+              <rect x="510" y="90" width="20" height="130" fill="#1B2A45"/>
+              <rect y="218" width="800" height="42" fill="#27485B"/>
+              <rect x="0" y="218" width="800" height="3" fill="#fff" opacity=".3"/>
+              <polygon points="270,218 270,165 300,218" fill="#EAF2F1" opacity=".92"/>
+              <rect x="266" y="216" width="20" height="8" fill="#16233B"/>
+              <polygon points="640,218 640,178 664,218" fill="#EAF2F1" opacity=".85"/>
+              <rect x="636" y="216" width="18" height="8" fill="#16233B"/>
+            </svg>
+            <div class="cap">📍 Viaduct Harbour・奧克蘭</div>
           </div>
           <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">08:30–10:00</div><div class="item-text">公寓自煮早餐，收行李退房</div></div>
           <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">10:45–11:15</div><div class="item-text">皇后鎮機場還車，辦理國內線登機</div></div>
@@ -634,10 +784,11 @@
 
     </div><!-- /#pages -->
 
-    <div id="pager">
-      <button class="pager-btn" id="prevBtn" onclick="step(-1)">‹</button>
-      <div id="pageIndicator">1 / 16</div>
-      <button class="pager-btn" id="nextBtn" onclick="step(1)">›</button>
+    <div id="bottombar">
+      <button class="bb-icon" id="homeBtn" onclick="goTo('cover')" title="回首頁" aria-label="回首頁">⌂</button>
+      <button class="bb-icon" id="prevBtn" onclick="step(-1)" aria-label="上一頁">‹</button>
+      <select id="pageSelect" onchange="goTo(this.value)"></select>
+      <button class="bb-icon" id="nextBtn" onclick="step(1)" aria-label="下一頁">›</button>
     </div>
   </main>
 </div>
@@ -646,7 +797,6 @@
 // ---------- Page registry ----------
 const PAGES = [
   {id:'cover', label:'封面', group:null},
-  {id:'overview', label:'總覽', group:null},
   {id:'prep', label:'入境與安全', group:'行前準備'},
   {id:'logistics', label:'航班・住宿・預算', group:'行前準備'},
   {id:'day0', label:'Day 0　出發', group:'每日行程'},
@@ -682,6 +832,27 @@ PAGES.forEach((p,i)=>{
   navlist.appendChild(btn);
 });
 
+// ---------- Build bottom-bar page select (mobile-friendly nav) ----------
+const pageSelect = document.getElementById('pageSelect');
+let lastSelGroup = undefined;
+let selGroupEl = null;
+PAGES.forEach((p)=>{
+  if(p.group !== lastSelGroup){
+    lastSelGroup = p.group;
+    if(p.group){
+      selGroupEl = document.createElement('optgroup');
+      selGroupEl.label = p.group;
+      pageSelect.appendChild(selGroupEl);
+    } else {
+      selGroupEl = null;
+    }
+  }
+  const opt = document.createElement('option');
+  opt.value = p.id;
+  opt.textContent = p.label;
+  (selGroupEl || pageSelect).appendChild(opt);
+});
+
 // ---------- Star scatter on cover ----------
 (function(){
   const wrap = document.getElementById('stars');
@@ -711,11 +882,11 @@ function goTo(id, push){
   const navbtn = document.getElementById('nav-'+id);
   if(navbtn) navbtn.classList.add('active');
   const idx = PAGES.findIndex(p=>p.id===id);
-  document.getElementById('pageIndicator').textContent = (idx+1)+' / '+PAGES.length;
+  pageSelect.value = id;
+  document.getElementById('homeBtn').disabled = (id==='cover');
   document.getElementById('prevBtn').disabled = idx<=0;
   document.getElementById('nextBtn').disabled = idx>=PAGES.length-1;
   if(push!==false) history.replaceState(null,'','#'+id);
-  closeSidebar();
 }
 function step(dir){
   const idx = currentIndex();
@@ -730,17 +901,6 @@ window.addEventListener('hashchange',()=>{
   const id = location.hash.replace('#','');
   if(id) goTo(id,false);
 });
-
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-  document.getElementById('hamburger').classList.toggle('hide');
-}
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('hamburger').classList.remove('hide');
-}
 
 // ---------- Init ----------
 (function init(){
