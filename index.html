@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>紐西蘭南島＋奧克蘭・全家自駕之旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B2A45; --night-2:#0F1B30; --night-3:#28466A;
+    --teal:#2F6F73; --teal-deep:#1F4D50; --teal-tint:#E2EDEB;
+    --gold:#BD8536; --gold-deep:#8E631F; --gold-tint:#F6ECD8;
+    --paper:#F0F1EA; --card:#FFFFFF; --ink:#23262B; --ink-soft:#5B6168;
+    --line:#DCDFD4; --caution:#9C4630; --caution-tint:#F3E3DB;
+    --sidebar-w:248px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; }
+  body{
+    font-family:"Noto Sans TC","Noto Sans CJK TC",sans-serif;
+    color:var(--ink); background:var(--paper); overflow:hidden;
+  }
+  .serif{ font-family:"Noto Serif TC","Noto Serif CJK TC",serif; }
+  h1,h2,h3,h4{ margin:0; font-weight:normal; }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:#C7CBC0; border-radius:6px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+
+  /* ============ APP SHELL ============ */
+  #app{ display:flex; height:100vh; width:100vw; }
+
+  /* ---- Sidebar ---- */
+  #sidebar{
+    width:var(--sidebar-w); flex:none; background:linear-gradient(190deg,var(--night-2),var(--night) 70%);
+    color:#EFF2F6; overflow-y:auto; padding:22px 0 30px 0; z-index:50;
+  }
+  .brand{ padding:0 22px 18px 22px; border-bottom:1px solid rgba(255,255,255,.12); margin-bottom:14px; }
+  .brand .eyebrow{ font-size:9.5px; letter-spacing:.24em; color:#9FB3CC; font-family:"Noto Sans TC"; font-weight:300; }
+  .brand h1{ font-size:19px; margin-top:6px; line-height:1.35; }
+  .brand h1 .accent{ color:#D9C599; }
+  .navgroup{ margin-bottom:6px; }
+  .navgroup-label{
+    font-size:9.5px; letter-spacing:.2em; color:#7E92AC; padding:14px 22px 6px 22px; font-weight:300;
+  }
+  .navbtn{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none;
+    color:#D6DEE8; font-family:"Noto Sans TC"; font-size:13px; padding:9px 22px; cursor:pointer;
+    border-left:3px solid transparent; transition:background .15s, color .15s;
+  }
+  .navbtn .num{ font-family:"Noto Serif TC"; font-size:13px; color:#8AA0BC; width:18px; flex:none; }
+  .navbtn:hover{ background:rgba(255,255,255,.06); color:#fff; }
+  .navbtn.active{ background:rgba(255,255,255,.1); color:#fff; border-left-color:var(--gold); font-family:"Noto Sans TC"; font-weight:500; }
+  .navbtn.active .num{ color:var(--gold); }
+  .navbtn .star{ color:var(--gold); font-size:10px; margin-left:auto; }
+
+  /* ---- Stage / Pages ---- */
+  #stage{ flex:1; position:relative; overflow:hidden; background:var(--paper); }
+  #hamburger{
+    display:none; position:fixed; top:16px; left:16px; z-index:60; width:40px; height:40px;
+    border-radius:50%; border:none; background:var(--night); color:#fff; font-size:17px; cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
+  }
+  #pages{ position:relative; height:100%; }
+  .page{
+    position:absolute; inset:0; overflow-y:auto; opacity:0; visibility:hidden;
+    transition:opacity .3s ease; padding:56px 64px 110px 64px;
+  }
+  .page.active{ opacity:1; visibility:visible; z-index:2; }
+  .page-inner{ max-width:880px; margin:0 auto; }
+
+  .kicker{ font-family:"Noto Sans TC Medium","Noto Sans TC"; font-size:10.5px; letter-spacing:.2em; color:var(--teal-deep); text-transform:uppercase; font-weight:500; }
+  .pg-title{ font-size:27px; color:var(--night); margin:4px 0 6px 0; }
+  .pg-rule{ height:3px; width:48px; background:var(--gold); margin:10px 0 22px 0; }
+  .pg-intro{ color:var(--ink-soft); font-size:13.5px; max-width:560px; margin-bottom:18px; line-height:1.8; }
+
+  /* ---- Pager controls ---- */
+  #pager{
+    position:absolute; left:50%; bottom:22px; transform:translateX(-50%); z-index:40;
+    display:flex; align-items:center; gap:14px; background:rgba(255,255,255,.92); backdrop-filter:blur(6px);
+    border:1px solid var(--line); border-radius:30px; padding:7px 8px; box-shadow:0 6px 22px rgba(20,30,40,.12);
+  }
+  .pager-btn{
+    width:32px; height:32px; border-radius:50%; border:none; background:var(--night); color:#fff;
+    font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .pager-btn:disabled{ opacity:.3; cursor:default; }
+  #pageIndicator{ font-size:11.5px; color:var(--ink-soft); min-width:54px; text-align:center; font-family:"Noto Sans TC Medium"; }
+
+  /* ============ COVER PAGE ============ */
+  #page-cover{ padding:0; }
+  .cover{
+    position:relative; height:100%; width:100%; overflow:hidden; color:#fff;
+    background:linear-gradient(180deg,var(--night-2) 0%, var(--night) 55%, var(--night-3) 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  }
+  .cover .stars span{ position:absolute; background:#fff; border-radius:50%; }
+  .cover-content{ position:relative; z-index:3; padding:0 24px; }
+  .cover-eyebrow{ font-size:11px; letter-spacing:.32em; color:#C9D6E6; text-transform:uppercase; font-weight:300; }
+  .cover-title{ font-size:clamp(34px,5.2vw,58px); line-height:1.18; color:#fff; margin-top:16px; }
+  .cover-title .sub{ display:block; font-size:.42em; color:#D9C599; margin-top:10px; font-family:"Noto Serif TC Medium","Noto Serif TC"; }
+  .hero-stats{ display:flex; gap:0; align-items:center; justify-content:center; margin-top:38px; }
+  .hero-stat{ padding:0 28px; }
+  .hero-stat .n{ font-family:"Noto Serif TC SemiBold","Noto Serif TC"; font-weight:600; font-size:clamp(26px,3.4vw,40px); color:#fff; }
+  .hero-stat .l{ font-size:11px; color:#AEC0D8; letter-spacing:.06em; margin-top:4px; }
+  .hero-div{ width:1px; height:46px; background:rgba(255,255,255,.25); }
+  .cover-cta{
+    margin-top:46px; display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.35); color:#fff; padding:11px 24px; border-radius:30px; font-size:12.5px;
+    letter-spacing:.05em; cursor:pointer; transition:background .2s;
+  }
+  .cover-cta:hover{ background:rgba(255,255,255,.18); }
+  .mountains{ position:absolute; left:0; right:0; bottom:0; width:100%; z-index:2; }
+
+  /* ============ STAT GRID (overview) ============ */
+  .stat-strip{ display:flex; gap:12px; flex-wrap:wrap; }
+  .stat-box{ flex:1; min-width:130px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 8px; text-align:center; }
+  .stat-box .n{ font-family:"Noto Serif TC SemiBold","Noto Serif TC"; font-size:28px; color:var(--teal-deep); }
+  .stat-box .l{ font-size:11px; color:var(--ink-soft); margin-top:6px; }
+
+  .route-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-top:18px; display:flex; gap:14px; align-items:center; }
+  .route-card .ico{ font-size:22px; }
+  .route-card .txt{ font-size:13px; color:var(--ink-soft); line-height:1.7; }
+  .route-card b{ font-family:"Noto Sans TC Medium","Noto Sans TC"; color:var(--ink); font-weight:500; }
+
+  /* ============ PREP CARDS ============ */
+  .prep-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .prep-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+  .prep-card h4{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:14px; color:var(--night); margin-bottom:10px; display:flex; align-items:center; gap:9px; }
+  .prep-card h4 .ico{ width:26px; height:26px; border-radius:50%; background:var(--teal-tint); color:var(--teal-deep); display:inline-flex; align-items:center; justify-content:center; font-size:13px; flex:none; }
+  .prep-card ul{ margin:0; padding-left:18px; font-size:12.8px; line-height:1.75; }
+  .prep-card li{ margin-bottom:7px; }
+  .prep-card li b{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; }
+  .callout{ border:1.5px dashed var(--caution); background:var(--caution-tint); border-radius:12px; padding:15px 18px; margin-top:16px; font-size:13px; line-height:1.7; }
+  .callout .h{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; color:var(--caution); margin-bottom:5px; }
+  .verify-note{ margin-top:18px; font-size:11px; color:var(--ink-soft); border-top:1px dashed var(--line); padding-top:10px; }
+
+  /* ============ TABLES ============ */
+  .tbl-wrap{ overflow-x:auto; margin-bottom:22px; border-radius:10px; }
+  table{ width:100%; border-collapse:collapse; font-size:12.6px; min-width:560px; }
+  thead th{ background:var(--night); color:#fff; text-align:left; padding:10px 12px; font-family:"Noto Sans TC Medium","Noto Sans TC"; font-size:11.5px; font-weight:500; }
+  tbody td{ padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; background:var(--card); }
+  tbody tr:nth-child(even) td{ background:#F7F7F2; }
+  .kitchen-yes{ color:var(--teal-deep); font-family:"Noto Sans TC Medium","Noto Sans TC"; }
+  .kitchen-no{ color:#9A9A90; }
+  h4.section-h{ font-size:13.5px; font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; color:var(--night); margin:24px 0 10px 0; display:flex; align-items:center; gap:8px; }
+  h4.section-h:first-child{ margin-top:0; }
+  .budget-cols{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .budget-item{ display:flex; justify-content:space-between; gap:8px; font-size:12.6px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .budget-item .pr{ font-family:"Noto Sans TC Medium","Noto Sans TC"; color:var(--night); white-space:nowrap; }
+  .pill-confirmed{ background:var(--teal); color:#fff; font-size:10px; padding:2px 8px; border-radius:20px; margin-right:6px; }
+  .pill-optional{ border:1px solid var(--gold); color:var(--gold); font-size:10px; padding:2px 8px; border-radius:20px; margin-right:6px; }
+
+  /* ============ DAY PAGES ============ */
+  .day-banner{
+    background:linear-gradient(120deg,var(--night) 0%, var(--teal-deep) 100%); color:#fff; border-radius:16px;
+    padding:24px 28px; margin-bottom:24px; display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  }
+  .day-banner .day-num{ font-family:"Noto Serif TC SemiBold","Noto Serif TC"; font-size:42px; line-height:1; }
+  .day-banner .day-num .lbl{ display:block; font-size:11px; letter-spacing:.22em; color:#BFD3CE; font-family:"Noto Sans TC"; margin-bottom:2px; }
+  .day-banner .day-route{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:18px; }
+  .day-banner .day-route .arrow{ color:#E4C98D; margin:0 6px; }
+  .day-banner .day-date{ font-size:12px; color:#CBD9DA; margin-top:3px; }
+  .day-banner .badge{ margin-left:auto; font-size:11px; background:rgba(255,255,255,.16); padding:5px 12px; border-radius:20px; }
+
+  .item-row{ display:flex; gap:13px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-radius:11px; padding:13px 15px; margin-bottom:10px; transition:box-shadow .15s, transform .15s; }
+  .item-row:hover{ box-shadow:0 5px 16px rgba(20,30,40,.07); transform:translateY(-1px); }
+  .item-row.star{ background:linear-gradient(0deg,#FFFDF7,#FFFDF7); border-color:#E9D3A4; }
+  .item-icon{ flex:none; width:30px; height:30px; border-radius:50%; background:var(--teal-tint); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:14.5px; margin-top:1px; }
+  .item-row.star .item-icon{ background:var(--gold-tint); color:var(--gold-deep); }
+  .item-time{ font-family:"Noto Sans TC Medium","Noto Sans TC"; font-size:11.5px; color:var(--teal-deep); white-space:nowrap; min-width:80px; padding-top:6px; flex:none; }
+  .item-row.star .item-time{ color:var(--gold-deep); }
+  .item-text{ flex:1; font-size:13.5px; line-height:1.65; padding-top:4px; }
+
+  .note-row{ display:flex; gap:11px; align-items:flex-start; border:1.5px dashed var(--gold); background:var(--gold-tint); border-radius:11px; padding:12px 15px; margin-bottom:10px; font-size:12.6px; line-height:1.7; color:#5C4A26; }
+  .note-row .chip{ flex:none; font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:10.5px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:20px; height:fit-content; white-space:nowrap; }
+
+  .day-stay{ margin-top:14px; display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--teal-deep); background:var(--teal-tint); padding:7px 14px; border-radius:20px; }
+
+  /* ============ PACKING ============ */
+  .pack-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .pack-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:17px 19px; }
+  .pack-card h4{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:14px; color:var(--night); margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:9px; }
+  .pack-card ul{ margin:0; padding:0; list-style:none; }
+  .pack-card li{ font-size:12.8px; padding:5px 0; display:flex; gap:9px; align-items:flex-start; }
+  .pack-card li::before{ content:""; flex:none; width:12px; height:12px; margin-top:3px; border:1.5px solid var(--teal-deep); border-radius:3px; }
+
+  /* ============ COUNTDOWN ============ */
+  .tl-row{ display:flex; gap:18px; }
+  .tl-when{ flex:none; width:96px; padding:14px 0; text-align:right; padding-right:16px; border-right:2px solid var(--gold); position:relative; }
+  .tl-when .w{ font-family:"Noto Sans TC Bold","Noto Sans TC"; font-weight:700; font-size:13px; color:var(--night); }
+  .tl-when::after{ content:""; position:absolute; right:-6px; top:20px; width:10px; height:10px; border-radius:50%; background:var(--gold); border:2px solid var(--paper); }
+  .tl-content{ flex:1; padding:14px 0 22px 0; }
+  .tl-content ul{ margin:0; padding-left:18px; font-size:13px; }
+  .tl-content li{ margin-bottom:6px; }
+
+  /* ============ Mobile ============ */
+  @media (max-width:880px){
+    #sidebar{ position:fixed; top:0; left:0; height:100%; transform:translateX(-100%); transition:transform .25s ease; box-shadow:8px 0 30px rgba(0,0,0,.3); }
+    #sidebar.open{ transform:translateX(0); }
+    #hamburger{ display:flex; align-items:center; justify-content:center; }
+    #hamburger.hide{ display:none; }
+    .page{ padding:78px 22px 110px 22px; }
+    .prep-grid, .pack-grid, .budget-cols{ grid-template-columns:1fr; }
+    .day-banner{ padding:20px; }
+    .day-banner .badge{ margin-left:0; }
+    #overlay{ display:none; position:fixed; inset:0; background:rgba(10,15,25,.45); z-index:45; }
+    #overlay.show{ display:block; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="eyebrow">FAMILY ROAD TRIP</div>
+      <h1 class="serif">紐西蘭南島<span class="accent">＋</span>奧克蘭</h1>
+    </div>
+    <nav id="navlist"><!-- generated by JS --></nav>
+  </aside>
+
+  <div id="overlay" onclick="closeSidebar()"></div>
+
+  <main id="stage">
+    <button id="hamburger" onclick="toggleSidebar()">☰</button>
+
+    <div id="pages">
+
+      <!-- ============ COVER ============ -->
+      <section class="page active" id="page-cover">
+        <div class="cover">
+          <div class="stars" id="stars"></div>
+          <svg class="mountains" viewBox="0 0 800 300" preserveAspectRatio="none" style="height:34%;" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,300 0,175 120,115 230,190 320,100 430,200 520,135 650,215 760,140 800,190 800,300" fill="#16233B" opacity="0.95"/>
+            <polygon points="0,300 0,215 90,165 180,225 300,150 400,225 520,160 630,232 720,175 800,225 800,300" fill="#223A5C" opacity="0.9"/>
+          </svg>
+          <div class="cover-content">
+            <div class="cover-eyebrow">FAMILY ROAD TRIP HANDBOOK</div>
+            <h1 class="cover-title serif">紐西蘭南島＋奧克蘭<span class="sub">全家自駕之旅</span></h1>
+            <div class="hero-stats">
+              <div class="hero-stat"><div class="n serif">10天9夜</div><div class="l">TRIP LENGTH</div></div>
+              <div class="hero-div"></div>
+              <div class="hero-stat"><div class="n serif">11/5—11/14</div><div class="l">2026・出發日期</div></div>
+            </div>
+            <button class="cover-cta" onclick="goTo('overview')">開始瀏覽　↓</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="page" id="page-overview">
+        <div class="page-inner">
+          <div class="kicker">Trip at a glance</div>
+          <h2 class="pg-title serif">全程一覽</h2>
+          <div class="pg-rule"></div>
+          <div class="stat-strip">
+            <div class="stat-box"><div class="n serif">5</div><div class="l">處住宿地點</div></div>
+            <div class="stat-box"><div class="n serif">3</div><div class="l">處有完整廚房</div></div>
+            <div class="stat-box"><div class="n serif">3</div><div class="l">大型體驗已確認</div></div>
+            <div class="stat-box"><div class="n serif">2</div><div class="l">趟國內線轉機</div></div>
+            <div class="stat-box"><div class="n serif">1</div><div class="l">趟米佛峽灣免自駕日</div></div>
+          </div>
+          <div class="route-card">
+            <div class="ico">🗺️</div>
+            <div class="txt"><b>路線：</b>基督城 → 特卡波湖 → 庫克山（來回） → 瓦納卡 → 皇后鎮（含米佛峽灣一日）→ 飛奧克蘭</div>
+          </div>
+          <div class="route-card">
+            <div class="ico">⭐</div>
+            <div class="txt"><b>圖例：</b>行程卡上的星號代表大型體驗或重點行程；金色虛線框代表備案，平時不用看，需要時再切換。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PREP ============ -->
+      <section class="page" id="page-prep">
+        <div class="page-inner">
+          <div class="kicker">Section 01</div>
+          <h2 class="pg-title serif">行前準備、安全與生活守則</h2>
+          <div class="pg-rule"></div>
+
+          <div class="prep-grid">
+            <div class="prep-card">
+              <h4><span class="ico">①</span>入境三部曲</h4>
+              <ul>
+                <li><b>NZeTA + IVL：</b>出發前用手機 App 申請電子旅行授權並付款，App 申請每人約 <b>NZD 117</b>（線上網頁申請則約 NZD 123）。</li>
+                <li><b>NZTD 旅客聲明：</b>取代紙本入境卡，<b>起飛前 24 小時內</b>上網或用 App 填完。送出後會收到含參考編號的確認信，<b>不需要列印</b>，截圖留底即可。</li>
+                <li><b>海關申報：</b>食物（泡麵、零食、茶包、中藥）與用過的戶外裝備（登山鞋底泥土）務必誠實申報，不確定就報。</li>
+              </ul>
+            </div>
+            <div class="prep-card">
+              <h4><span class="ico">②</span>右駕自駕守則</h4>
+              <ul>
+                <li><b>靠左行駛＋圓環：</b>永遠靠左，進圓環順時針，優先讓<b>右手邊</b>來車。</li>
+                <li><b>單線橋：</b>大白箭頭＝你方優先；小紅箭頭＝完全停車讓對向先行。</li>
+                <li><b>慢車讓路：</b>後方跟車滿 5 輛且車速低於速限，需駛入 Slow Vehicle Bay 讓道。</li>
+                <li><b>離線地圖＋通話 SIM：</b>山區常無訊號，全員下載離線地圖；SIM 要選有通話功能的方案。</li>
+              </ul>
+            </div>
+            <div class="prep-card">
+              <h4><span class="ico">③</span>洋蔥式穿法＆打包</h4>
+              <ul>
+                <li>11 月為春末夏初，<b>早晚溫差極大</b>，一日可能四季都遇到。</li>
+                <li>必帶：防風防水外套（Gore-Tex 佳）、輕羽絨、排汗內層、毛帽手套、抓地力好的健行鞋。</li>
+                <li>紫外線極強：SPF50+ 防曬乳、太陽眼鏡、帽子不可少。</li>
+              </ul>
+            </div>
+            <div class="prep-card">
+              <h4><span class="ico">④</span>超市買酒提醒</h4>
+              <ul>
+                <li>紐西蘭超市買酒查驗極嚴，<b>只要同行有一人沒帶護照正本，店家會直接拒售全團</b>，不論外表年紀多大。</li>
+                <li>想小酌的話，採買時請<b>全員都把護照正本帶在身上</b>，不能只帶影本或照片。</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="h">⚠ 米佛峽灣沙蠅（Sandflies）特別提醒</div>
+            台灣的防蚊液對沙蠅基本無效，務必在 Day 1 採買時就買好當地強力防蚊液，米佛峽灣下車前全員噴好。
+          </div>
+          <div class="verify-note">已核對：NZeTA／IVL 費用與 NZTD 申報規則為截至 2026 年 6 月查證之 Immigration New Zealand 官方資訊，出發前仍建議在官網覆核一次。</div>
+        </div>
+      </section>
+
+      <!-- ============ LOGISTICS ============ -->
+      <section class="page" id="page-logistics">
+        <div class="page-inner">
+          <div class="kicker">Section 02</div>
+          <h2 class="pg-title serif">航班、住宿與活動預訂總表</h2>
+          <div class="pg-rule"></div>
+
+          <h4 class="section-h">✈️ 航班資訊</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>日期</th><th>航段</th><th>時間</th><th>備註</th></tr></thead>
+            <tbody>
+              <tr><td>11/5（四）</td><td>台北 TPE → 奧克蘭 AKL</td><td>18:45 起飛 → 翌日 10:25 抵達</td><td>夜宿機上</td></tr>
+              <tr><td>11/6（五）</td><td>奧克蘭 AKL → 基督城 CHC</td><td>14:00 → 15:25</td><td>轉機 3 小時 35 分，十分充裕</td></tr>
+              <tr><td>11/13（五）</td><td>皇后鎮 ZQN → 奧克蘭 AKL</td><td>13:05 → 14:55</td><td>退房還車後飛行</td></tr>
+              <tr><td>11/14（六）</td><td>奧克蘭 AKL → 台北 TPE</td><td>10:45 → 17:00</td><td>當日抵台</td></tr>
+            </tbody>
+          </table></div>
+
+          <h4 class="section-h">🏨 住宿總表</h4>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>日期</th><th>地點</th><th>飯店</th><th>房型／重點</th><th>廚房</th></tr></thead>
+            <tbody>
+              <tr><td>11/6–11/7</td><td>Christchurch</td><td>Fable Christchurch</td><td>市中心，第一晚調時差</td><td class="kitchen-no">無完整廚房</td></tr>
+              <tr><td>11/7–11/9</td><td>Lake Tekapo</td><td>Peppers Bluewater Resort</td><td>Two-Bedroom Lake View Suite・連住2晚</td><td class="kitchen-yes">有完整廚房</td></tr>
+              <tr><td>11/9–11/10</td><td>Wanaka</td><td>Edgewater Hotel</td><td>Premium Apartment・湖畔兩房大空間</td><td class="kitchen-yes">有完整廚房</td></tr>
+              <tr><td>11/10–11/13</td><td>Queenstown</td><td>Oaks Queenstown Shores Resort</td><td>湖景雙臥室公寓・共3晚</td><td class="kitchen-yes">有完整廚房</td></tr>
+              <tr><td>11/13–11/14</td><td>Auckland</td><td>M Social Auckland</td><td>港灣第一排・2間 Social Twin</td><td class="kitchen-no">無廚房</td></tr>
+            </tbody>
+          </table></div>
+
+          <h4 class="section-h">🎟 活動預訂與預算（4人總體）</h4>
+          <div class="budget-cols">
+            <div>
+              <div style="margin-bottom:10px;"><span class="pill-confirmed">已確認</span><b>已預訂活動</b></div>
+              <div class="budget-item"><span>11/8　庫克山 Glacier Explorer 冰河船</span><span class="pr">NZD 876</span></div>
+              <div class="budget-item"><span>11/8　Dark Sky Project 山頂觀星</span><span class="pr">NZD 956</span></div>
+              <div class="budget-item"><span>11/11　米佛峽灣 大巴＋遊船</span><span class="pr">NZD 1,256</span></div>
+            </div>
+            <div>
+              <div style="margin-bottom:10px;"><span class="pill-optional">彈性</span><b>保留／現場加購</b></div>
+              <div class="budget-item"><span>11/12　Skyline Gondola ＋ 5 趟 Luge</span><span class="pr">約 NZD 300–360</span></div>
+              <div class="budget-item"><span>11/12　Onsen Hot Pools 昂森溫泉</span><span class="pr">約 NZD 260／池</span></div>
+              <div class="budget-item"><span>11/10　TSS Earnslaw 蒸汽船＋牧場 BBQ</span><span class="pr">約 NZD 676 起</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DAY PAGES (generated below) ============ -->
+      <section class="page" id="page-day0">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>0</div>
+            <div><div class="day-route">台灣出發 <span class="arrow">→</span> 啟航</div><div class="day-date">11/5（四）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">16:00</div><div class="item-text">桃園機場集合，辦理出境與行李托運</div></div>
+          <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">18:45</div><div class="item-text">飛往奧克蘭，夜宿機上</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>再次檢查行李，嚴禁隨身或託運肉類、新鮮水果、植物種子。</div></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day1">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>1</div>
+            <div><div class="day-route">奧克蘭 <span class="arrow">→</span> 基督城</div><div class="day-date">11/6（五）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🛃</div><div class="item-time">10:25</div><div class="item-text">抵達奧克蘭機場，全團過海關（誠實申報食物與裝備）</div></div>
+          <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">14:00–15:25</div><div class="item-text">轉搭國內線飛抵基督城</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">15:45–16:30</div><div class="item-text">機場取車，務必錄影檢查外觀與輪胎</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">17:30–19:30</div><div class="item-text">Riverside Market 逛街，享用多國美食晚餐 🍴</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>若還有體力，可導航至 Pak'nSave Riccarton 大採買：紐西蘭肋眼牛排、羊小排、Lewis Road Creamery 鮮奶，以及米佛峽灣（Day 6）必備的當地強力防蚊液（台灣防蚊液對沙蠅無效）。</div></div>
+          <div class="day-stay">🏨 住宿：Fable Christchurch</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day2">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>2</div>
+            <div><div class="day-route">基督城 <span class="arrow">→</span> Fairlie <span class="arrow">→</span> 特卡波湖</div><div class="day-date">11/7（六）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30</div><div class="item-text">退房，出發前加滿油</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30–11:30</div><div class="item-text">開往 Fairlie 小鎮（約185km，2.5–3小時）</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">11:30–12:30</div><div class="item-text">Fairlie Bakehouse 午餐 🍴，必點鮭魚肉派或鹿肉派</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">12:30–13:30</div><div class="item-text">開往 Lake Tekapo（約43km，40分鐘）</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">13:30–15:00</div><div class="item-text">好牧羊人教堂，牛奶藍湖畔漫步拍照</div></div>
+          <div class="item-row"><div class="item-icon">🛒</div><div class="item-time">16:30</div><div class="item-text">Four Square Tekapo 超市補貨</div></div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">18:00–20:00</div><div class="item-text">晚餐：公寓自煮牛排，或 Kohan Restaurant 鮭魚丼飯</div></div>
+          <div class="day-stay">🏨 住宿：Peppers Bluewater Resort</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day3">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>3</div>
+            <div><div class="day-route">Tekapo <span class="arrow">⇄</span> 庫克山</div><div class="day-date">11/8（日）</div></div>
+            <div class="badge">★ 重頭戲日</div>
+          </div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">08:30–09:50</div><div class="item-text">開往庫克山（約105km，1小時20分。出發前油箱過半）</div></div>
+          <div class="item-row"><div class="item-icon">📷</div><div class="item-time">10:00–10:45</div><div class="item-text">Aoraki/Mt Cook 遊客中心</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">11:30–14:15</div><div class="item-text">Glacier Explorer 塔斯曼冰河船，近距離看冰牆浮冰</div></div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">14:30–15:20</div><div class="item-text">Old Mountaineers Cafe 下午茶午餐</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">15:30–18:30</div><div class="item-text">健行 Hooker Valley Track（胡克谷步道）</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>全程來回約10km、需時3–3.5小時。若冰河船後已累，或起風下雨，立刻切換成 Kea Point Track（輕鬆好走，來回僅1小時），確保不耽誤晚上的觀星行程。</div></div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">18:30–19:50</div><div class="item-text">返回特卡波，簡單晚餐、抓緊時間休息</div></div>
+          <div class="item-row"><div class="item-icon">📍</div><div class="item-time">21:15</div><div class="item-text">抵達 Dark Sky Project Base 報到（1 Motuariki Lane）</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">21:30–23:30</div><div class="item-text">Summit Experience 山頂觀星</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>約翰山頂深夜接近零度，全員務必穿薄羽絨＋防風外套，戴毛帽手套。</div></div>
+          <div class="day-stay">🏨 住宿：Peppers Bluewater Resort</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day4">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>4</div>
+            <div><div class="day-route">Tekapo <span class="arrow">→</span> Lindis Pass <span class="arrow">→</span> 瓦納卡</div><div class="day-date">11/9（一）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">08:30–09:30</div><div class="item-text">悠閒早餐、收行李、退房</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">09:30</div><div class="item-text">出發往瓦納卡，可在 Twizel／Omarama 補油休息</div></div>
+          <div class="item-row"><div class="item-icon">📷</div><div class="item-time">沿途</div><div class="item-text">橫跨 Lindis Pass 觀景台，魔戒級荒涼高原美景</div></div>
+          <div class="item-row"><div class="item-icon">🏨</div><div class="item-time">14:30</div><div class="item-text">抵達瓦納卡，入住 Edgewater Hotel</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">16:00–17:30</div><div class="item-text">朝聖 That Wanaka Tree 孤獨樹，湖畔散步</div></div>
+          <div class="item-row"><div class="item-icon">🛒</div><div class="item-time">18:00</div><div class="item-text">New World 超市補貨；公寓自煮羊小排，或 Big Fig／Kika 用餐</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>若 Day 3 觀星不太累、今早天氣好，可把「開車上 Mt. John 頂端 Astro Cafe 喝咖啡俯瞰蒂卡波湖」排進退房後出發前，完全順路（上山需付小額過路費）。</div></div>
+          <div class="day-stay">🏨 住宿：Edgewater Hotel</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day5">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>5</div>
+            <div><div class="day-route">Wanaka <span class="arrow">→</span> 箭鎮 <span class="arrow">→</span> 皇后鎮</div><div class="day-date">11/10（二）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🧭</div><div class="item-time">08:30–09:30</div><div class="item-text">退房出發</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">09:30–11:30</div><div class="item-text">開越紐西蘭最高公路 Crown Range Road</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">11:30–13:30</div><div class="item-text">Arrowtown 箭鎮老街漫步，The Fork and Tap 午餐 🍴</div></div>
+          <div class="item-row"><div class="item-icon">🏨</div><div class="item-time">15:00</div><div class="item-text">入住 Oaks Queenstown Shores Resort</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">16:00–18:00</div><div class="item-text">皇后鎮市區與湖畔散步，Fergburger／Patagonia 冰淇淋 🍴</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>Crown Range Road 陡且髮夾彎多，請穩健慢行；後方跟車超過5輛時記得靠 Slow Vehicle Bay 讓道。</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>此時段保留彈性，可評估現場加購 17:00 的 TSS Earnslaw 古董蒸汽船＋Walter Peak 牧場 BBQ 晚餐。</div></div>
+          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第1晚／共3晚）</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day6">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>6</div>
+            <div><div class="day-route">米佛峽灣一日遊</div><div class="day-date">11/11（三）</div></div>
+            <div class="badge">不自駕</div>
+          </div>
+          <div class="item-row"><div class="item-icon">📍</div><div class="item-time">06:15</div><div class="item-text">RealNZ 皇后鎮旅客中心報到（88 Beach Street）</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">06:45</div><div class="item-text">Coach + Cruise 大巴接駁＋峽灣遊船：中午登船 Signature Cruise，瀑布、野生海豹</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">19:30</div><div class="item-text">大巴送返皇后鎮市區</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>峽灣單程4–5小時，搭大巴可在車上放鬆補眠，沿途停靠 94 號公路精華點如 Mirror Lakes 拍照。</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>早出晚歸消耗大，回飯店不建議再自煮，建議直接到市區 Flame Bar & Grill 吃戰斧牛排或肋排犒賞一天 🍴。</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>米佛峽灣沙蠅兇猛，下車前全員噴好 Day 1 買的強力防蚊液。</div></div>
+          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第2晚）</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day7">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>7</div>
+            <div><div class="day-route">皇后鎮度假放鬆日</div><div class="day-date">11/12（四）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">09:00–12:00</div><div class="item-text">睡到自然醒，皇后鎮花園漫步，Bespoke Kitchen 早午餐，順道採買伴手禮</div></div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">12:00–13:30</div><div class="item-text">午餐：Botswana Butchery 湖景餐廳</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">14:00</div><div class="item-text">Skyline Gondola ＋ 3–5趟 Luge 滑車，俯瞰皇后鎮與魔戒雪山</div></div>
+          <div class="note-row"><span class="chip">備案</span><div>傍晚18:00 強烈建議排入 Onsen Hot Pools 昂森溫泉——非常熱門，現場幾乎沒有位置，務必在出發前於官網先訂好（選 Original Onsen Soak）。</div></div>
+          <div class="day-stay">🏨 住宿：Oaks Queenstown Shores Resort（第3晚）</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day8">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>8</div>
+            <div><div class="day-route">皇后鎮 <span class="arrow">→</span> 飛奧克蘭</div><div class="day-date">11/13（五）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">08:30–10:00</div><div class="item-text">公寓自煮早餐，收行李退房</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">10:45–11:15</div><div class="item-text">皇后鎮機場還車，辦理國內線登機</div></div>
+          <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">13:05–14:55</div><div class="item-text">國內線：皇后鎮飛奧克蘭</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">15:30–16:15</div><div class="item-text">叫車直奔市中心 M Social Auckland</div></div>
+          <div class="item-row star"><div class="item-icon">⭐</div><div class="item-time">17:00–19:00</div><div class="item-text">Viaduct Harbour 港邊漫步或 Commercial Bay 逛街</div></div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">19:00</div><div class="item-text">晚餐：Soul Bar & Bistro 或 Harbourside，生蠔海鮮慶祝自駕圓滿</div></div>
+          <div class="day-stay">🏨 住宿：M Social Auckland</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-day9">
+        <div class="page-inner">
+          <div class="day-banner">
+            <div class="day-num serif"><span class="lbl">DAY</span>9</div>
+            <div><div class="day-route">奧克蘭 <span class="arrow">→</span> 台北</div><div class="day-date">11/14（六）</div></div>
+          </div>
+          <div class="item-row"><div class="item-icon">🍴</div><div class="item-time">07:00</div><div class="item-text">早餐後退房</div></div>
+          <div class="item-row"><div class="item-icon">🚗</div><div class="item-time">07:30</div><div class="item-text">叫車直奔機場（國際線提早3小時抵達）</div></div>
+          <div class="item-row"><div class="item-icon">✈️</div><div class="item-time">10:45</div><div class="item-text">奧克蘭起飛</div></div>
+          <div class="item-row star"><div class="item-icon">🎉</div><div class="item-time">17:00</div><div class="item-text">抵達桃園機場，平安回家！</div></div>
+        </div>
+      </section>
+
+      <!-- ============ PACKING ============ -->
+      <section class="page" id="page-packing">
+        <div class="page-inner">
+          <div class="kicker">Section 04</div>
+          <h2 class="pg-title serif">行李打包查檢表</h2>
+          <div class="pg-rule"></div>
+          <div class="pack-grid">
+            <div class="pack-card">
+              <h4>🪪 隨身證件包</h4>
+              <ul>
+                <li>護照正本（效期需到2027/5以後）</li>
+                <li>中華民國駕照正本＋國際駕照正本</li>
+                <li>NZeTA 批准信截圖</li>
+                <li>NZTD 確認信／參考編號截圖</li>
+                <li>信用卡2–3張（取車押金用駕駛本人卡）</li>
+                <li>機票、訂房、活動確認信電子檔</li>
+              </ul>
+            </div>
+            <div class="pack-card">
+              <h4>🧥 衣物與裝備</h4>
+              <ul>
+                <li>Gore-Tex 防風防水外套</li>
+                <li>輕便羽絨衣（高山觀星保暖主力）</li>
+                <li>排汗長袖、百搭長褲</li>
+                <li>抓地力好的健行鞋（出發前洗淨鞋底）</li>
+                <li>太陽眼鏡、遮陽帽、毛帽手套圍巾</li>
+                <li>摺疊雨傘或輕便雨衣</li>
+              </ul>
+            </div>
+            <div class="pack-card">
+              <h4>🔌 電子與車載小物</h4>
+              <ul>
+                <li>車用手機架（自駕導航靈魂核心）</li>
+                <li>車用充電器／充電線</li>
+                <li>行動電源</li>
+                <li>紐西蘭轉接頭 Type I（2–3個）</li>
+                <li>相機、腳架、快門線（拍星空必備）</li>
+                <li>含通話功能的 eSIM／實體 SIM</li>
+              </ul>
+            </div>
+            <div class="pack-card">
+              <h4>💊 醫療常備藥品</h4>
+              <ul>
+                <li>暈車藥（皇冠山脈、米佛峽灣山路必備）</li>
+                <li>普拿疼、綜合感冒藥</li>
+                <li>腸胃藥、止瀉藥</li>
+                <li>個人慢性病藥物（附英文說明書／完整標籤）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ COUNTDOWN ============ -->
+      <section class="page" id="page-countdown">
+        <div class="page-inner">
+          <div class="kicker">Section 05</div>
+          <h2 class="pg-title serif">出發前倒數作業</h2>
+          <div class="pg-rule"></div>
+          <div class="tl-row"><div class="tl-when"><div class="w">出發前 1–2個月</div></div>
+            <div class="tl-content"><ul>
+              <li>上網預約 Day 7 傍晚的 Onsen Hot Pools 昂森溫泉</li>
+              <li>確認租車保險為「0自付額全險（Full Cover／Max Cover）」</li>
+              <li>全員至監理所辦理國際駕照</li>
+            </ul></div>
+          </div>
+          <div class="tl-row"><div class="tl-when"><div class="w">出發前 1個月</div></div>
+            <div class="tl-content"><ul>
+              <li>透過手機 App 全員申辦 NZeTA 電子旅遊授權</li>
+              <li>投保海外旅遊平安險、突發疾病醫療險、旅遊不便險</li>
+            </ul></div>
+          </div>
+          <div class="tl-row"><div class="tl-when"><div class="w">出發前 1週</div></div>
+            <div class="tl-content"><ul>
+              <li>全員手機下載南島離線地圖</li>
+              <li>建立「2026紐西蘭」相簿，存入所有訂房／機票／門票截圖</li>
+              <li>銀行換少量紐幣現金（約NZD 100–200，當地刷卡幾乎無所不能）</li>
+            </ul></div>
+          </div>
+          <div class="tl-row"><div class="tl-when"><div class="w">出發前 24小時內</div></div>
+            <div class="tl-content"><ul>
+              <li>線上填寫並提交 NZTD 旅客聲明，確認信存入手機</li>
+            </ul></div>
+          </div>
+          <div class="tl-row"><div class="tl-when"><div class="w">出發當日</div></div>
+            <div class="tl-content"><ul>
+              <li>檢查護照、雙駕照、手機架、行動電源、信用卡是否在包包裡</li>
+              <li>帶著快樂的心情，跟全家出發！🎉</li>
+            </ul></div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /#pages -->
+
+    <div id="pager">
+      <button class="pager-btn" id="prevBtn" onclick="step(-1)">‹</button>
+      <div id="pageIndicator">1 / 16</div>
+      <button class="pager-btn" id="nextBtn" onclick="step(1)">›</button>
+    </div>
+  </main>
+</div>
+
+<script>
+// ---------- Page registry ----------
+const PAGES = [
+  {id:'cover', label:'封面', group:null},
+  {id:'overview', label:'總覽', group:null},
+  {id:'prep', label:'入境與安全', group:'行前準備'},
+  {id:'logistics', label:'航班・住宿・預算', group:'行前準備'},
+  {id:'day0', label:'Day 0　出發', group:'每日行程'},
+  {id:'day1', label:'Day 1　基督城', group:'每日行程'},
+  {id:'day2', label:'Day 2　特卡波湖', group:'每日行程'},
+  {id:'day3', label:'Day 3　庫克山', group:'每日行程', star:true},
+  {id:'day4', label:'Day 4　瓦納卡', group:'每日行程'},
+  {id:'day5', label:'Day 5　皇后鎮', group:'每日行程'},
+  {id:'day6', label:'Day 6　米佛峽灣', group:'每日行程', star:true},
+  {id:'day7', label:'Day 7　皇后鎮假日', group:'每日行程'},
+  {id:'day8', label:'Day 8　飛奧克蘭', group:'每日行程'},
+  {id:'day9', label:'Day 9　回台北', group:'每日行程'},
+  {id:'packing', label:'打包清單', group:'行前清單'},
+  {id:'countdown', label:'倒數時間表', group:'行前清單'},
+];
+
+// ---------- Build sidebar nav ----------
+const navlist = document.getElementById('navlist');
+let lastGroup = undefined;
+PAGES.forEach((p,i)=>{
+  if(p.group !== lastGroup){
+    const lab = document.createElement('div');
+    lab.className = 'navgroup-label';
+    lab.textContent = p.group ? p.group : '';
+    if(p.group) navlist.appendChild(lab);
+    lastGroup = p.group;
+  }
+  const btn = document.createElement('button');
+  btn.className = 'navbtn';
+  btn.id = 'nav-'+p.id;
+  btn.onclick = ()=>goTo(p.id);
+  btn.innerHTML = '<span class="num">'+String(i+1).padStart(2,'0')+'</span><span>'+p.label+'</span>'+(p.star?'<span class="star">★</span>':'');
+  navlist.appendChild(btn);
+});
+
+// ---------- Star scatter on cover ----------
+(function(){
+  const wrap = document.getElementById('stars');
+  let html='';
+  for(let i=0;i<48;i++){
+    const top=(Math.random()*46+2).toFixed(1);
+    const left=(Math.random()*96+2).toFixed(1);
+    const op=[0.35,0.45,0.55,0.65,0.8][Math.floor(Math.random()*5)];
+    const size=[1.6,2,2.4,3][Math.floor(Math.random()*4)];
+    html+='<span style="top:'+top+'%;left:'+left+'%;opacity:'+op+';width:'+size+'px;height:'+size+'px;"></span>';
+  }
+  wrap.innerHTML = html;
+})();
+
+// ---------- Navigation logic ----------
+function currentIndex(){
+  const active = document.querySelector('.page.active');
+  return PAGES.findIndex(p=>'page-'+p.id === active.id);
+}
+function goTo(id, push){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(el=>el.classList.remove('active'));
+  const target = document.getElementById('page-'+id);
+  if(!target) return;
+  target.classList.add('active');
+  target.scrollTop = 0;
+  const navbtn = document.getElementById('nav-'+id);
+  if(navbtn) navbtn.classList.add('active');
+  const idx = PAGES.findIndex(p=>p.id===id);
+  document.getElementById('pageIndicator').textContent = (idx+1)+' / '+PAGES.length;
+  document.getElementById('prevBtn').disabled = idx<=0;
+  document.getElementById('nextBtn').disabled = idx>=PAGES.length-1;
+  if(push!==false) history.replaceState(null,'','#'+id);
+  closeSidebar();
+}
+function step(dir){
+  const idx = currentIndex();
+  const next = idx+dir;
+  if(next>=0 && next<PAGES.length) goTo(PAGES[next].id);
+}
+window.addEventListener('keydown',(e)=>{
+  if(e.key==='ArrowRight') step(1);
+  if(e.key==='ArrowLeft') step(-1);
+});
+window.addEventListener('hashchange',()=>{
+  const id = location.hash.replace('#','');
+  if(id) goTo(id,false);
+});
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+  document.getElementById('hamburger').classList.toggle('hide');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('hamburger').classList.remove('hide');
+}
+
+// ---------- Init ----------
+(function init(){
+  const startId = location.hash ? location.hash.replace('#','') : 'cover';
+  goTo(startId, false);
+})();
+</script>
+</body>
+</html>
